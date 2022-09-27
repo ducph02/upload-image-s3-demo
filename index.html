@@ -1,53 +1,30 @@
-<html>
-  <head>
-    <title>Hello AWS S3</title>
-  </head>
-  <body>
-    <input type="file" id="file-input" />
-    <p id="status">Please select a file</p>
-    <script>
-      ;(() => {
-        document.getElementById('file-input').onchange = () => {
-          const files = document.getElementById('file-input').files
-          const file = files[0]
-          if (file == null) {
-            return alert('No file selected.')
-          }
-          getSignedRequest(file)
-        }
-      })()
-      const getSignedRequest = (file) => {
-        const xhr = new XMLHttpRequest()
-        xhr.open(
-          'GET',
-          `http://localhost:3000/sign-s3?file-name=${file.name}&file-type=${file.type}`
-        )
-        xhr.onreadystatechange = () => {
-          if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-              const response = JSON.parse(xhr.responseText)
-              uploadFile(file, response.signedRequest, response.url)
-            } else {
-              alert('Could not get signed URL.')
-            }
-          }
-        }
-        xhr.send()
-      }
-      const uploadFile = (file, signedRequest, url) => {
-        const xhr = new XMLHttpRequest()
-        xhr.open('PUT', signedRequest)
-        xhr.onreadystatechange = () => {
-          if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-              console.log(`Upload succeed to: ${url}`)
-            } else {
-              alert('Could not upload file.')
-            }
-          }
-        }
-        xhr.send(file)
-      }
-    </script>
-  </body>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hello AWS S3</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.1/css/bootstrap-grid.min.css"
+    integrity="sha512-Aa+z1qgIG+Hv4H2W3EMl3btnnwTQRA47ZiSecYSkWavHUkBF2aPOIIvlvjLCsjapW1IfsGrEO3FU693ReouVTA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.1/js/bootstrap.min.js"
+    integrity="sha512-EKWWs1ZcA2ZY9lbLISPz8aGR2+L7JVYqBAYTq5AXgBkSjRSuQEGqWx8R1zAX16KdXPaCjOCaKE8MCpU0wcHlHA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="d-flex justify-content-center">
+      <div class="mt-5">
+        <input type="file" id="file-input" />
+        <p id="status">Please select a file</p>
+      </div>
+    </div>
+  </div>
+  <script src="index.js"></script>
+</body>
+
 </html>

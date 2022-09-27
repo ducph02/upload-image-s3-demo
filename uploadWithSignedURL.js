@@ -7,7 +7,8 @@ const app = express()
 app.use(cors())
 app.get('/sign-s3', (req, res) => {
   const s3 = new aws.S3()
-  const fileName = req.query['file-name']
+  const fileName = removeDiacritics(req.query['file-name'])
+  console.log(fileName)
   const fileType = req.query['file-type']
   const s3Params = {
     Bucket: process.env.BUCKET,
@@ -30,6 +31,20 @@ app.get('/sign-s3', (req, res) => {
     res.end()
   })
 })
+
+const removeDiacritics = (string) => {
+  let output = ''
+  let normalized = string.normalize('NFD')
+  console.log(normalized)
+  let i = 0
+  let j = 0
+  while (i < string.length) {
+    output += normalized[j]
+    j += string[i] == normalized[j] ? 1 : 2
+    i++
+  }
+  return output.split(' ').join('+')
+}
 
 const port = process.env.PORT || 3000
 const host = process.env.HOST || 'localhost'
